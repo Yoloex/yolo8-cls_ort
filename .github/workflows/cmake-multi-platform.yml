@@ -23,7 +23,7 @@ jobs:
           run: >
             unzip libs/onnxruntime.zip
       - name: Display the file
-        run: echo ${{ steps.downloadORT.outputs.filename }}
+        run: echo ${{ steps.downloadORT.outputs.path }}
   download-onnxruntime-for-ubuntu:
     runs-on: [ubuntu-latest]
     steps:
@@ -38,7 +38,7 @@ jobs:
           run: >
             tar -xf libs/onnxruntime.tgz
       - name: Display the file
-        run: echo ${{ steps.downloadORT.outputs.filename }}
+        run: echo ${{ steps.downloadORT.outputs.path }}
   build:
     runs-on: ${{ matrix.os }}
 
