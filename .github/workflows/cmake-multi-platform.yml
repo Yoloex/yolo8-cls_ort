@@ -38,7 +38,7 @@ jobs:
         tar -xf onnxruntime.tgz
         mv onnxruntime-linux-x64-1.16.3 onnxruntime
         LIB_DIR=$(find ~+ -type d -name 'onnxruntime')
-        echo (LIB_DIR=$LIB_DIR) >> $env:GITHUB_ENV
+        echo "LIB_DIR=$(echo $LIB_DIR)" >> $env:GITHUB_ENV
 
     - name: Configure CMake
       run: >
@@ -116,6 +116,8 @@ jobs:
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: | 
         ctest --build-config ${{ matrix.build_type }}
+        cd x64
+        dir
     - name: Upload to artifact
       uses: actions/upload-artifact@v3
       with:
