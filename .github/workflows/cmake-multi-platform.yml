@@ -38,7 +38,7 @@ jobs:
         tar -xf onnxruntime.tgz
         mv onnxruntime-linux-x64-1.16.3 onnxruntime
         LIB_DIR=$(find ~+ -type d -name 'onnxruntime')
-        echo ("LIB_DIR=" + $LIB_DIR) >> $env:GITHUB_ENV
+        echo (LIB_DIR=$LIB_DIR) >> $env:GITHUB_ENV
 
     - name: Configure CMake
       run: >
@@ -46,13 +46,12 @@ jobs:
         -DONNXRUNTIME_ROOTDIR=${{ env.LIB_DIR }}
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
-        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
 
     - name: Build
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       run: |
-        cmake --build build
+        cmake --build build --config ${{ matrix.build_type }}
         find build -type f
 
     - name: Test
@@ -105,12 +104,11 @@ jobs:
         -DONNXRUNTIME_ROOTDIR=${{ env.LIB_DIR }}
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
-        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
 
     - name: Build
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
-      run: cmake --build build
+      run: cmake --build build --config ${{ matrix.build_type }}
 
     - name: Test
       working-directory: build
@@ -118,11 +116,8 @@ jobs:
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: | 
         ctest --build-config ${{ matrix.build_type }}
-        dir
-        cd .\x64\
-        dir
     - name: Upload to artifact
       uses: actions/upload-artifact@v3
       with:
         name: yolo8-cls_ort
-        path: x64-Release/yolo8-cls_ort
+        path: x64/Release/yolo8-cls_ort.exe
