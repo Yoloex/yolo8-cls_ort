@@ -48,12 +48,12 @@ jobs:
     - name: Test
       working-directory: build
       run: ctest --build-config ${{ matrix.build_type }}
-    
+
     - name: Upload to artifact
       uses: actions/upload-artifact@v3
       with:
         name: yolo8-cls_ort
-        path: ${{ github.workspace }}\build\${{ matrix.build_type }}
+        path: ${{ github.workspace }}\build
 
   build-on-windows:
     runs-on: windows-latest
