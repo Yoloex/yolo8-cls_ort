@@ -38,7 +38,6 @@ jobs:
         tar -xf onnxruntime.tgz
         mv onnxruntime-linux-x64-1.16.3 onnxruntime
         LIB_DIR=$(find ~+ -type d -name 'onnxruntime')
-        chcp 65001
         echo ("LIB_DIR=" + $LIB_DIR) >> $env:GITHUB_ENV
 
     - name: Configure CMake
