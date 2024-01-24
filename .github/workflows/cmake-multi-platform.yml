@@ -22,6 +22,8 @@ jobs:
           filename: onnxruntime.zip
           run: >
             unzip libs/onnxruntime.zip
+      - name: Display the file
+        run: head -n8 lib/onnxruntime.zip
   download-onnxruntime-for-ubuntu:
     runs-on: [ubuntu-latest]
     steps:
@@ -35,6 +37,8 @@ jobs:
           filename: onnxruntime.tgz
           run: >
             tar -xf libs/onnxruntime.tgz
+      - name: Display the file
+        run: head -n8 lib/onnxruntime.tgz
   build:
     runs-on: ${{ matrix.os }}
 
