@@ -35,6 +35,7 @@ jobs:
         echo "Download finished"
         echo "Extracting ..."
         tar -vxf onnxruntime.tgz
+        mv onnxruntime-linux-x64-1.16.3 onnxruntime
         LIB_DIR=$(find ~+ -type d -name 'onnxruntime')
         echo $LIB_DIR
     - uses: actions/checkout@v3
@@ -91,6 +92,7 @@ jobs:
         choco install wget
         wget -O onnxruntime.zip https://github.com/microsoft/onnxruntime/releases/download/v1.16.3/onnxruntime-win-x64-1.16.3.zip
         unzip onnxruntime.zip
+        Rename-Item -Path "onnxruntime-win-x64-1.16.3" -NewName "onnxruntime"
         $LIB_DIR = (Get-ChildItem -Directory -Filter onnxruntime).FullName
         Write-Output "##vso[task.setvariable variable=LIB_DIR;]$LIB_DIR"
     - uses: actions/checkout@v3
