@@ -53,7 +53,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: yolo8-cls_ort
-        path: ${{ github.workspace }}\build
+        path: ${{ github.workspace }}/build
 
   build-on-windows:
     runs-on: windows-latest
