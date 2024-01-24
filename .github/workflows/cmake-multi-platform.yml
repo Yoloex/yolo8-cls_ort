@@ -119,6 +119,8 @@ jobs:
       run: | 
         ctest --build-config ${{ matrix.build_type }}
         dir
+        cd .\x64\
+        dir
     - name: Upload to artifact
       uses: actions/upload-artifact@v3
       with:
