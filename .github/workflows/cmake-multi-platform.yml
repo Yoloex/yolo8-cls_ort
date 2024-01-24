@@ -60,6 +60,7 @@ jobs:
     - name: Build
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       run: |
+        find ${{ steps.download.outputs.LIB_DIR }} -type f
         cmake --build ${{ steps.strings.outputs.build-output-dir }}
         find build -type f
 
