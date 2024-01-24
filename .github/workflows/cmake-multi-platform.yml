@@ -12,33 +12,35 @@ jobs:
   download-onnxruntime-for-win:
     runs-on: [windows-latest]
     steps:
-      - uses: suisei-cn/actions-download-file@master
-        id: downloadORT
-        name: Download onnxruntime for win
-        with:
-          url: "[API Endpoint](https://github.com/microsoft/onnxruntime/releases/download/v1.16.3/onnxruntime-win-x64-1.16.3.zip)"
-          auto-match: true
-          target: libs/
-          filename: onnxruntime.zip
-          run: >
-            unzip libs/onnxruntime.zip
+      # - uses: suisei-cn/actions-download-file@master
+      #   id: downloadORT
+      #   name: Download onnxruntime for win
+      #   with:
+      #     url: "[API Endpoint](https://github.com/microsoft/onnxruntime/releases/download/v1.16.3/onnxruntime-win-x64-1.16.3.zip)"
+      #     auto-match: true
+      #     target: libs/
+      #     filename: onnxruntime.zip
+            
       - name: Display the file
-        run: echo ${{ steps.downloadORT.outputs.path }}
-  download-onnxruntime-for-ubuntu:
-    runs-on: [ubuntu-latest]
-    steps:
-      - uses: suisei-cn/actions-download-file@master
-        id: downloadORT
-        name: Download onnxruntime for win
-        with:
-          url: "[API Endpoint](https://github.com/microsoft/onnxruntime/releases/download/v1.16.3/onnxruntime-linux-x64-1.16.3.tgz)"
-          auto-match: true
-          target: libs/
-          filename: onnxruntime.tgz
-          run: >
-            tar -xf libs/onnxruntime.tgz
-      - name: Display the file
-        run: echo ${{ steps.downloadORT.outputs.path }}
+        run: >
+          curl https://github.com/microsoft/onnxruntime/releases/download/v1.16.3/onnxruntime-win-x64-1.16.3.zip -O onnxruntime.zip
+          unzip libs/onnxruntime.zip
+          ls -l
+  # download-onnxruntime-for-ubuntu:
+  #   runs-on: [ubuntu-latest]
+  #   steps:
+  #     - uses: suisei-cn/actions-download-file@master
+  #       id: downloadORT
+  #       name: Download onnxruntime for win
+  #       with:
+  #         url: "[API Endpoint](https://github.com/microsoft/onnxruntime/releases/download/v1.16.3/onnxruntime-linux-x64-1.16.3.tgz)"
+  #         auto-match: true
+  #         target: libs/
+  #         filename: onnxruntime.tgz
+  #         run: >
+  #           tar -xf libs/onnxruntime.tgz
+  #     - name: Display the file
+  #       run: echo ${{ steps.downloadORT.outputs.path }}
   build:
     runs-on: ${{ matrix.os }}
 
