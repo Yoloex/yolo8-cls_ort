@@ -61,7 +61,9 @@ jobs:
 
     - name: Build
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
-      run: cmake -DONNXRUNTIME_ROOTDIR=${{ steps.download.outputs.LIB_DIR }} --build ${{ steps.strings.outputs.build-output-dir }} .
+      run: >
+        cd ${{ steps.strings.outputs.build-output-dir }}
+        cmake -DONNXRUNTIME_ROOTDIR=${{ steps.download.outputs.LIB_DIR }} ..
 
     - name: Test
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
