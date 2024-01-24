@@ -68,8 +68,8 @@ int main(int argc, char* argv[])
   
 #ifdef _WIN32  
   std::string str = argv[1];
-  std::wstring wide_string = std::wstring(str.begin(), str.end());
-  std::basic_string<ORTCHAR_T> model_file = std::basic_string<ORTCHAR_T>(wide_string);
+  wstring model_file(str.size(), L'#');
+  mbstowcs(&model_file[0], str.c_str(), str.size());
 #else
   std::string model_file = argv[1];
 #endif
