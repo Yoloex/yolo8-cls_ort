@@ -38,9 +38,7 @@ jobs:
         tar -xf onnxruntime.tgz
         mv onnxruntime-linux-x64-1.16.3 onnxruntime
         path=$(find ~+ -type d -name 'onnxruntime')
-        echo $path
         echo "LIB_DIR=$path" >> $GITHUB_ENV
-        echo ${{env.LIB_DIR}}
 
     - name: Configure CMake
       run: >
@@ -124,4 +122,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: yolo8-cls_ort.exe
-        path: ${{ github.workspace }}/${{ matrix.build_type }}
+        path: ${{ github.workspace }}\build\${{ matrix.build_type }}
