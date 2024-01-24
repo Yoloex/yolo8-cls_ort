@@ -9,34 +9,7 @@ on:
     branches: [ "master" ]
 
 jobs:
-  download-onnxruntime-for-win:
-    runs-on: [windows-latest]
-    steps:
-      - uses: suisei-cn/actions-download-file@master
-        id: downloadORT
-        name: Download onnxruntime for win
-        with:
-          url: "[API Endpoint](https://github.com/microsoft/onnxruntime/releases/download/v1.16.3/onnxruntime-win-x64-1.16.3.zip)"
-          auto-match: true
-          target: libs/
-          filename: onnxruntime.zip
-          run: >
-            unzip libs/onnxruntime.zip
-  download-onnxruntime-for-ubuntu:
-    runs-on: [ubuntu-latest]
-    steps:
-      - uses: suisei-cn/actions-download-file@master
-        id: downloadORT
-        name: Download onnxruntime for win
-        with:
-          url: "[API Endpoint](https://github.com/microsoft/onnxruntime/releases/download/v1.16.3/onnxruntime-linux-x64-1.16.3.tgz)"
-          auto-match: true
-          target: libs/
-          filename: onnxruntime.tgz
-          run: >
-            tar -xf libs/onnxruntime.tgz
   build:
-    needs: [download-onnxruntime-for-win, download-onnxruntime-for-ubuntu]
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -59,8 +32,23 @@ jobs:
           - os: windows-latest
             c_compiler: cl
             cpp_compiler: cl
-
+        
+    env:
+      URL_LINUX: https://github.com/microsoft/onnxruntime/releases/download/v1.16.3/onnxruntime-linux-x64-1.16.3.tgz
+      URL_WINDOWS: https://github.com/microsoft/onnxruntime/releases/download/v1.16.3/onnxruntime-win-x64-1.16.3.zip
     steps:
+    - name: Download onnxruntime
+      id: download
+      run: |
+        if [[ "$RUNNER_OS" == "Linux" ]]; then
+          wget ${{ env.URL_LINUX }}
+          unzip onnxruntime-linux-x64-1.16.3.tgz 
+        elif [[ "$RUNNER_OS" == "Windows" ]]; then
+          wget ${{ env.URL_WINDOWS }}
+          unzip onnxruntime-win-x64-1.16.3.zip
+        fi
+        LIB_DIR=$(find . -type d -name 'onnxruntime')
+        echo "::set-output name=LIB_DIR::<span class="math-inline">LIB\_DIR"
     - uses: actions/checkout@v3
 
     - name: Set reusable strings
@@ -75,7 +63,7 @@ jobs:
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
-        -DONNXRUNTIME_ROOTDIR=libs/onnxruntime
+        -DONNXRUNTIME_ROOTDIR=${{ steps.download.outputs.LIB_DIR }}
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
