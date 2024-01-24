@@ -44,6 +44,7 @@ jobs:
 
     - name: Configure CMake
       run: >
+        cd ${{ steps.download.outputs.LIB_DIR }} && ls -l && cd .. &&
         cmake -B build
         -DONNXRUNTIME_ROOTDIR=${{ steps.download.outputs.LIB_DIR }}
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
@@ -113,7 +114,7 @@ jobs:
 
     - name: Build
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
-      run: cmake --build build --config ${{ matrix.build_type }}
+      run: cmake --build build
 
     - name: Test
       working-directory: build
