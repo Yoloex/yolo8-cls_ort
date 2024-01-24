@@ -39,6 +39,7 @@ jobs:
         mv onnxruntime-linux-x64-1.16.3 onnxruntime
         LIB_DIR=$(find ~+ -type d -name 'onnxruntime')
         echo "LIB_DIR=$(echo $LIB_DIR | cut -c 1-6)" >> $env:GITHUB_ENV
+        echo ${{env.LIB_DIR}}
 
     - name: Configure CMake
       run: >
@@ -117,12 +118,8 @@ jobs:
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: | 
         ctest --build-config ${{ matrix.build_type }}
-        cd x64
-        dir
-        cd Release
-        dir
     - name: Upload to artifact
       uses: actions/upload-artifact@v3
       with:
         name: yolo8-cls_ort
-        path: x64/Release/yolo8-cls_ort.exe
+        path: ${{ matrix.build_type }}/yolo8-cls_ort.exe
