@@ -39,13 +39,14 @@ jobs:
     steps:
     - name: Download onnxruntime
       id: download
+      shell: bash
       run: |
         if [[ "$RUNNER_OS" == "Linux" ]]; then
-          wget ${{ env.URL_LINUX }}
-          unzip onnxruntime-linux-x64-1.16.3.tgz 
+          wget -O onnxruntime.tgz ${{ env.URL_LINUX }}
+          unzip onnxruntime.tgz 
         elif [[ "$RUNNER_OS" == "Windows" ]]; then
-          wget ${{ env.URL_WINDOWS }}
-          unzip onnxruntime-win-x64-1.16.3.zip
+          wget -O onnxruntime.zip ${{ env.URL_WINDOWS }}
+          unzip onnxruntime.zip
         fi
         LIB_DIR=$(find . -type d -name 'onnxruntime')
         echo "::set-output name=LIB_DIR::<span class="math-inline">LIB\_DIR"
