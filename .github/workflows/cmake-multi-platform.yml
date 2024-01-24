@@ -9,26 +9,32 @@ on:
     branches: [ "master" ]
 
 jobs:
-  install-wget:
-    runs-on: [ubuntu-latest, windows-latest]
-    steps:
-      - name: Install wget
-        run: >
-          sudo apt-get install wget
   download-onnxruntime-for-win:
     runs-on: [windows-latest]
     steps:
-      - name: Download onnxruntime library
-        run: >
-          wget https://github.com/microsoft/onnxruntime/releases/download/v1.16.3/onnxruntime-win-x64-1.16.3.zip -O onnxruntime.zip
-          unzip onnxruntime.zip
+      - uses: suisei-cn/actions-download-file@master
+        id: downloadORT
+        name: Download onnxruntime for win
+        with:
+          url: "[API Endpoint](https://github.com/microsoft/onnxruntime/releases/download/v1.16.3/onnxruntime-win-x64-1.16.3.zip)"
+          auto-match: true
+          target: libs/
+          filename: onnxruntime.zip
+          run: >
+            unzip ./libs/onnxruntime.zip
   download-onnxruntime-for-ubuntu:
     runs-on: [ubuntu-latest]
     steps:
-      - name: Download onnxruntime library
-        run: >
-          wget https://github.com/microsoft/onnxruntime/releases/download/v1.16.3/onnxruntime-linux-x64-1.16.3.tgz -O onnxruntime.tgz
-          tar -xf onnxruntime.tgz
+      - uses: suisei-cn/actions-download-file@master
+        id: downloadORT
+        name: Download onnxruntime for win
+        with:
+          url: "[API Endpoint](https://github.com/microsoft/onnxruntime/releases/download/v1.16.3/onnxruntime-linux-x64-1.16.3.tgz)"
+          auto-match: true
+          target: libs/
+          filename: onnxruntime.tgz
+          run: >
+            tar -xf ./libs/onnxruntime.tgz
   build:
     runs-on: ${{ matrix.os }}
 
@@ -68,7 +74,7 @@ jobs:
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
-        -DONNXRUNTIME_ROOTDIR ./onnxruntime
+        -DONNXRUNTIME_ROOTDIR ./libs/onnxruntime
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
