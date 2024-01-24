@@ -9,6 +9,12 @@ on:
     branches: [ "master" ]
 
 jobs:
+  install-wget:
+    runs-on: [ubuntu-latest, windows-latest]
+    steps:
+      - name: Install wget
+        run: >
+          sudo apt-get install wget
   download-onnxruntime-for-win:
     runs-on: [windows-latest]
     steps:
