@@ -44,7 +44,6 @@ jobs:
 
     - name: Configure CMake
       run: >
-        cd ${{ steps.download.outputs.LIB_DIR }} && ls -l && cd .. &&
         cmake -B build
         -DONNXRUNTIME_ROOTDIR=${{ steps.download.outputs.LIB_DIR }}
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
@@ -105,6 +104,7 @@ jobs:
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
       run: >
+        cd .\${{ steps.download.outputs.LIB_DIR }}\; dir; cd ..;
         cmake -B build
         -DONNXRUNTIME_ROOTDIR=${{ steps.download.outputs.LIB_DIR }}
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
@@ -125,4 +125,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: yolo8-cls_ort
-        path: build/Release-x86_64/yolo8-cls_ort
+        path: build/x64-Release/yolo8-cls_ort
