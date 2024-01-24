@@ -91,22 +91,22 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Download onnxruntime
-      id: download
       run: |
         choco install wget
         wget -O onnxruntime.zip https://github.com/microsoft/onnxruntime/releases/download/v1.16.3/onnxruntime-win-x64-1.16.3.zip
         unzip onnxruntime.zip
         Rename-Item -Path "onnxruntime-win-x64-1.16.3" -NewName "onnxruntime"
         $LIB_DIR = (Get-ChildItem -Directory -Filter onnxruntime).FullName
-        Write-Output "##vso[task.setvariable variable=LIB_DIR;]$LIB_DIR"
+        chcp 65001
+        echo ("LIB_DIR=" + $LIB_DIR) >> $env:GITHUB_ENV
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
       run: >
-        cd .\${{ steps.download.outputs.LIB_DIR }}\; dir; cd ..;
+        echo $env:LIB_DIR;
         cmake -B build
-        -DONNXRUNTIME_ROOTDIR=${{ steps.download.outputs.LIB_DIR }}
+        -DONNXRUNTIME_ROOTDIR=$env:LIB_DIR
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
