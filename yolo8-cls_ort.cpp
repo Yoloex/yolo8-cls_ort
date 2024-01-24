@@ -64,10 +64,15 @@ void resize_image(const vector<T>& image, vector<T>& resized_image, int width, i
 
 int main(int argc, char* argv[])
 {
-  string model_path = argv[1], img_path = argv[2];
-  wstring session_name(model_path.size(), L'#');
-
-  mbstowcs(&session_name[0], model_path.c_str(), model_path.size());
+  string img_path = argv[2];
+  
+#ifdef _WIN32  
+  std::string str = argv[1];
+  std::wstring wide_string = std::wstring(str.begin(), str.end());
+  std::basic_string<ORTCHAR_T> model_file = std::basic_string<ORTCHAR_T>(wide_string);
+#else
+  std::string model_file = argv[1];
+#endif
 
   Env env(ORT_LOGGING_LEVEL_WARNING, "test");
   SessionOptions session_options;
@@ -75,7 +80,7 @@ int main(int argc, char* argv[])
 
   //	ThrowOnError(OrtSessionOptionsAppendExecutionProvider_CUDA(session_options, 0));
 
-  Session session( env, session_name.c_str(), session_options );
+  Session session( env, model_file.c_str(), session_options );
 
   size_t num_input_nodes = session.GetInputCount();
   vector<const char*> input_node_names;
