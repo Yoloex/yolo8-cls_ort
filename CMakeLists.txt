@@ -8,7 +8,7 @@ project ("yolo8-cls_ort")
 # Add source to this project's executable.
 add_executable (yolo8-cls_ort "yolo8-cls_ort.cpp" "yolo8-cls_ort.h" "lodepng.h" "lodepng.cpp")
 
-set(ONNXRUNTIME_ROOTDIR ${} CACHE PATH "Path to onnxruntime root directory")
+set(ONNXRUNTIME_ROOTDIR "${ONNXRUNTIME_ROOTDIR}" CACHE PATH "Path to onnxruntime root directory")
 
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories("${ONNXRUNTIME_ROOTDIR}/include")
