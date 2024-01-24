@@ -42,16 +42,9 @@ jobs:
         echo $LIB_DIR
         echo "::set-output name=LIB_DIR::$LIB_DIR"
 
-    - name: Set reusable strings
-      # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
-      id: strings
-      shell: bash
-      run: |
-        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
-
     - name: Configure CMake
       run: >
-        cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        cmake -B build
         -DONNXRUNTIME_ROOTDIR=${{ steps.download.outputs.LIB_DIR }}
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
@@ -62,11 +55,11 @@ jobs:
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       run: |
         find ${{ steps.download.outputs.LIB_DIR }} -type f
-        cmake --build ${{ steps.strings.outputs.build-output-dir }}
+        cmake --build build
         find build -type f
 
     - name: Test
-      working-directory: ${{ steps.strings.outputs.build-output-dir }}
+      working-directory: build
       # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest --build-config ${{ matrix.build_type }}
@@ -96,6 +89,7 @@ jobs:
         cpp_compiler: [cl]
         
     steps:
+    - uses: actions/checkout@v3
     - name: Download onnxruntime
       id: download
       run: |
@@ -105,20 +99,12 @@ jobs:
         Rename-Item -Path "onnxruntime-win-x64-1.16.3" -NewName "onnxruntime"
         $LIB_DIR = (Get-ChildItem -Directory -Filter onnxruntime).FullName
         Write-Output "##vso[task.setvariable variable=LIB_DIR;]$LIB_DIR"
-    - uses: actions/checkout@v3
-
-    - name: Set reusable strings
-      # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
-      id: strings
-      shell: bash
-      run: |
-        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
       run: >
-        cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        cmake -B build
         -DONNXRUNTIME_ROOTDIR=${{ steps.download.outputs.LIB_DIR }}
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
@@ -127,10 +113,15 @@ jobs:
 
     - name: Build
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+      run: cmake --build build --config ${{ matrix.build_type }}
 
     - name: Test
-      working-directory: ${{ steps.strings.outputs.build-output-dir }}
+      working-directory: build
       # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest --build-config ${{ matrix.build_type }}
+    - name: Upload to artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: yolo8-cls_ort
+        path: build/Release-x86_64/yolo8-cls_ort
