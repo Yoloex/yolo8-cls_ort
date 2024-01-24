@@ -38,7 +38,7 @@ jobs:
         tar -xf onnxruntime.tgz
         mv onnxruntime-linux-x64-1.16.3 onnxruntime
         LIB_DIR=$(find ~+ -type d -name 'onnxruntime')
-        echo "LIB_DIR=$(echo $LIB_DIR)" >> $env:GITHUB_ENV
+        echo "LIB_DIR=$(echo $LIB_DIR | cut -c 1-6)" >> $env:GITHUB_ENV
 
     - name: Configure CMake
       run: >
@@ -95,6 +95,7 @@ jobs:
         $LIB_DIR = (Get-ChildItem -Directory -Filter onnxruntime).FullName
         chcp 65001
         echo ("LIB_DIR=" + $LIB_DIR) >> $env:GITHUB_ENV
+        echo "${env.LIB_DIR}"
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
@@ -117,6 +118,8 @@ jobs:
       run: | 
         ctest --build-config ${{ matrix.build_type }}
         cd x64
+        dir
+        cd Release
         dir
     - name: Upload to artifact
       uses: actions/upload-artifact@v3
