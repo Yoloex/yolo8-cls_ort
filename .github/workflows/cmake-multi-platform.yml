@@ -64,6 +64,7 @@ jobs:
       run: |
         cd ${{ steps.strings.outputs.build-output-dir }}
         cmake -DONNXRUNTIME_ROOTDIR=${{ steps.download.outputs.LIB_DIR }} ..
+        find . -type f
 
     - name: Test
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
